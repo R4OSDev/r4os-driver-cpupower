@@ -1,7 +1,7 @@
 R4OS_MODULE_MANIFEST=2
 KIND=R4D
 NAME=CPUPOWER
-VERSION=0.1.1
+VERSION=0.1.2
 LANGUAGE=Zig
 SOURCE=src/main.zig
 TARGET=/R4OS/DRIVERS/CPUPOWER.R4D
@@ -11,4 +11,4 @@ META=r4d.name=CPUPOWER
 META=r4d.type=misc
 META=r4d.parallel_callbacks=owned-v1
 META=module.name=R4D_CPUPOWER
-META=module.description=Passive model-bound CPU telemetry
+META=module.description=Model-bound CPU telemetry and explicit local HWP/CPPC

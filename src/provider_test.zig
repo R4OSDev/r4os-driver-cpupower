@@ -8,6 +8,7 @@ const Provider = @import("provider.zig").Provider;
 const t = std.testing;
 test {
     _ = @import("hwp_test.zig");
+    _ = @import("cppc_test.zig");
 }
 var fixture: struct {
     cpu: u32 = 2,
