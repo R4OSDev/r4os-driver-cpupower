@@ -6,6 +6,15 @@ address is accepted. Its manifest declares parallel callbacks with owned
 lifetimes. It creates no threads. Passive observations retain no CPU pins;
 explicit performance requests retain exact CPU membership until actual return.
 
+The separate optional idle policy introduced in0.85.31 permits only locally
+qualified firmware entries, caps declared entry/exit latency at100us and
+requires a remaining timer budget exceeding four times that latency. This
+small initial intent is copied into the kernel; CPUPOWER adds no worker or
+idle callback. It is independent from PowerService frequency profiles.
+No feature-enabling MSR write is issued. Policy/provider withdrawal closes
+new entries and requires actual previous exits before unload; HLT remains
+the fallback. This policy makes no residency or energy measurement claim.
+
 The optional 0.85.30 firmware adapter uses independently typed
 `CpuFirmwareInfo` receipts and the external ACPIPLAT worker transport. It may
 wait and never enters the local-register HWP/CPPC Session. CPUPOWER and ACPIPLAT

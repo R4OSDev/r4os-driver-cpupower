@@ -86,7 +86,17 @@ export fn cpu_power_init(input: *const a.DriverApi) callconv(.c) i32 {
             return attached_fw;
         }
     }
-    ctx.logInfo("CPUPOWER.R4D ready; direct HWP/CPPC and separate external firmware transport, no governor");
+    if (mechanism.has("idle_policy")) {
+        // Explicit conservative idle intent lives with this external owner;
+        // it neither selects a frequency profile nor enables an MSR feature.
+        const policy: a.CpuIdlePolicy = .{ .provider_generation = cookie, .enabled = 1, .maximum_latency_us = 100, .residency_factor = 4 };
+        const result_idle = mechanism.idlePolicy(&policy);
+        if (result_idle != 0) {
+            _ = cpu_power_shutdown();
+            return result_idle;
+        }
+    }
+    ctx.logInfo("CPUPOWER.R4D ready; direct HWP/CPPC, firmware transport and bounded idle intent");
     return 0;
 }
 export fn cpu_power_shutdown() callconv(.c) i32 {
