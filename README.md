@@ -6,6 +6,14 @@ address is accepted. Its manifest declares parallel callbacks with owned
 lifetimes. It creates no threads. Passive observations retain no CPU pins;
 explicit performance requests retain exact CPU membership until actual return.
 
+The optional 0.85.30 firmware adapter uses independently typed
+`CpuFirmwareInfo` receipts and the external ACPIPLAT worker transport. It may
+wait and never enters the local-register HWP/CPPC Session. CPUPOWER and ACPIPLAT
+retain independent exact provider generations; full firmware domains exclude
+direct CPU controls. Missing firmware is unavailable, and an uncertain receipt
+keeps its actual token. `SYSINFO /CPUFW:<cpu>` explicitly inspects this route.
+No physical clock or energy result follows from a loaded AML namespace.
+
 `SYSINFO /CPUPOWER[:n]` and `SPECTRA METRICS CPUPOWER` read cached observations.
 `SPECTRA CHECK SMP /POWER` explicitly refreshes twice on every available CPU
 using existing owned compute workers and actual joins. No sample is invented at

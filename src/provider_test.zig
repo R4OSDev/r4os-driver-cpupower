@@ -7,6 +7,7 @@ const a = r4os.abi;
 const Provider = @import("provider.zig").Provider;
 const t = std.testing;
 test {
+    _ = @import("firmware_test.zig");
     _ = @import("hwp_test.zig");
     _ = @import("cppc_test.zig");
 }
