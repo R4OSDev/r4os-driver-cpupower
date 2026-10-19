@@ -1,0 +1,8 @@
+.{
+    .name = .r4os_driver_cpupower,
+    .version = "0.1.0",
+    .fingerprint = 0xcd93ff5ad62acec0,
+    .minimum_zig_version = "0.16.0",
+    .dependencies = .{ .r4os_sdk = .{ .url = "https://github.com/R4OSDev/r4os-sdk/archive/cdf6ffddf940f8d1d8eee24985dcf2b3accd5c3b.tar.gz", .hash = "r4os_sdk-0.64.42-NnPzAl-nFAExHd_nIlImsqXYK_vo1s-yBfKyQRg8F9ox" } },
+    .paths = .{ "LICENSE", "NOTICE", "README.md", "build.zig", "build.zig.zon", "module.R4MF", "src" },
+}

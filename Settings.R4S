@@ -1,0 +1,6 @@
+﻿# CpuPower paths relative to this repository.
+SDK_ROOT=../../SDK
+CONTRACT_ROOT=../../Contract
+DEVKIT_ROOT=../../../DevKit
+ARTIFACTS_ROOT=../../../Artifacts/Modules/CpuPower
+ZIG_ROOT=Toolchains/Zig
