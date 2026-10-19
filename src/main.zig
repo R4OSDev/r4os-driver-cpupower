@@ -2,7 +2,9 @@
 const r4os = @import("r4os");
 const a = r4os.abi;
 const Provider = @import("provider.zig").Provider;
+const Hwp = @import("hwp.zig").Provider;
 var provider: Provider = undefined;
+var hwp: Hwp = undefined;
 var cookie: u64 = 0;
 comptime {
     asm (r4os.r4dev.driverEntriesAsm("cpu_power_init", "cpu_power_shutdown"));
@@ -15,12 +17,18 @@ fn capture(context: usize, cpu: u32, epoch: u64, out: *a.CpuPowerInfo) callconv(
     const owner: *Provider = @ptrFromInt(context);
     return owner.capture(cpu, epoch, out);
 }
+fn performance(context: usize, request: *const a.CpuPerformanceRequest, out: *a.CpuPerformanceInfo) callconv(.c) i32 {
+    const owner: *Hwp = @ptrFromInt(context);
+    return owner.execute(request.*, out);
+}
 export fn cpu_power_init(input: *const a.DriverApi) callconv(.c) i32 {
     const ctx = r4os.r4dev.DriverContext.init(input);
     if (!ctx.apiCompatible()) return a.cpu_capabilities_error_unsupported;
     const resources = ctx.resources() orelse return a.cpu_capabilities_error_unsupported;
     const mechanism = resources.cpuPower() orelse return a.cpu_capabilities_error_unsupported;
-    if (!mechanism.has("counters_read")) return a.cpu_capabilities_error_unsupported;
+    inline for (.{ "counters_read", "feature", "register_performance", "control_acquire", "control_release", "register_compare_write" }) |field| {
+        if (!mechanism.has(field)) return a.cpu_capabilities_error_unsupported;
+    }
     if (cookie != 0) return a.cpu_capabilities_error_busy;
     provider = Provider.init(mechanism);
     const backend: a.CpuPowerBackend = .{
@@ -31,7 +39,20 @@ export fn cpu_power_init(input: *const a.DriverApi) callconv(.c) i32 {
     };
     const result = mechanism.register(&backend, &cookie);
     if (result != 0) return result;
-    ctx.logInfo("CPUPOWER.R4D ready; passive local observations, no power policy");
+    hwp = Hwp.init(mechanism);
+    const control: a.CpuPerformanceBackend = .{
+        .context = @intFromPtr(&hwp),
+        .execute = @intFromPtr(&performance),
+        .flags = a.cpu_power_backend_flag_parallel,
+    };
+    const attached = mechanism.registerPerformance(cookie, &control);
+    if (attached != 0) {
+        const released = mechanism.unregister(cookie);
+        if (released != 0) return released;
+        cookie = 0;
+        return attached;
+    }
+    ctx.logInfo("CPUPOWER.R4D ready; passive observations and explicit local HWP, no governor");
     return 0;
 }
 export fn cpu_power_shutdown() callconv(.c) i32 {

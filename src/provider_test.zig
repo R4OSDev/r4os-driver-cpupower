@@ -6,6 +6,9 @@ const r4os = @import("r4os");
 const a = r4os.abi;
 const Provider = @import("provider.zig").Provider;
 const t = std.testing;
+test {
+    _ = @import("hwp_test.zig");
+}
 var fixture: struct {
     cpu: u32 = 2,
     epoch: u64 = 7,
