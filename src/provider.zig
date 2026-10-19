@@ -43,6 +43,11 @@ pub const Provider = struct {
         };
         @memcpy(value.profile_name[0..name.len], name);
         if (profile == .virtual) value.flags |= a.cpu_power_flag_virtual;
+        switch (d.machineCheckModel(profile)) {
+            1 => value.flags |= a.cpu_power_flag_mca_model,
+            2 => value.flags |= a.cpu_power_flag_mca_model | a.cpu_power_flag_smca_model,
+            else => {},
+        }
         if (profile == .virtual or profile == .unsupported) value.unsupported_mask = fields;
         return value;
     }

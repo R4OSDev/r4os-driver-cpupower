@@ -88,3 +88,10 @@ Volume3B17.4 and Volume4 model tables (HWP table2-39, native6:4E/5E);
 Volume 1 effective frequency, PATCH_LEVEL, P-state 0 and energy registers;
 [AMD energy driver scope notes](https://github.com/amd/amd_energy/blob/master/README.md).
 The implementation is original R4OS code; no third-party driver source is copied.
+
+Since0.1.5, passive metadata flags identify documented MCA model knowledge
+for the existing native Haswell profile and SMCA model knowledge for the exact
+Milan19h/01h/B1 profile. Unknown and virtual profiles set neither flag. This
+does not claim actual bank presence, enabled reporting or current health and
+starts no sampling or MSR operation. The kernel owns the necessary resident
+hardware-error capture; Spectra owns raw presentation and error decoding.

@@ -82,6 +82,7 @@ test "actual provider keeps VM unavailable without any model register read or sa
     try t.expectEqual(@as(u64, 0), value.sequence);
     try t.expectEqual(@as(i32, 0), provider.capture(2, 7, &value));
     try t.expectEqual(a.cpu_power_state_virtual, value.state);
+    try t.expectEqual(@as(u32, 0), value.flags & (a.cpu_power_flag_mca_model | a.cpu_power_flag_smca_model));
     try t.expectEqual(@as(u32, 0), value.valid_mask);
     try t.expectEqual(@as(u32, 0xfff), value.unsupported_mask);
     try t.expectEqual(@as(u64, 1), value.sequence);
@@ -165,6 +166,7 @@ test "actual AMD B1 provider keeps patch low32 P0 reference unavailable temperat
     var value: a.CpuPowerInfo = .{};
     try t.expectEqual(@as(i32, 0), provider.capture(2, 7, &value));
     try t.expectEqual(a.cpu_power_profile_amd_milan_b1, value.profile);
+    try t.expectEqual(a.cpu_power_flag_mca_model | a.cpu_power_flag_smca_model, value.flags & (a.cpu_power_flag_mca_model | a.cpu_power_flag_smca_model));
     try t.expectEqual(@as(u32, 0x8001234), value.microcode_revision);
     try t.expectEqual(@as(u64, 2_500_000_000), value.reference_hz);
     try t.expectEqual(@as(u64, 1_000_000), value.core_energy_uj);

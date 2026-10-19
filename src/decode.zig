@@ -4,6 +4,21 @@
 const std = @import("std");
 
 pub const Profile = enum(u32) { unsupported, virtual, intel_haswell, amd_milan_b1 };
+/// Passive documented model knowledge only. Actual MCA/SMCA advertisement,
+/// bank counts, enabled reporting and raw errors belong to their own receipt.
+pub fn machineCheckModel(p: Profile) u32 {
+    return switch (p) {
+        .intel_haswell => 1,
+        .amd_milan_b1 => 2,
+        else => 0,
+    };
+}
+test "MCA model knowledge excludes unknown and virtual profiles without claiming hardware banks" {
+    try std.testing.expectEqual(@as(u32, 0), machineCheckModel(.unsupported));
+    try std.testing.expectEqual(@as(u32, 0), machineCheckModel(.virtual));
+    try std.testing.expectEqual(@as(u32, 1), machineCheckModel(.intel_haswell));
+    try std.testing.expectEqual(@as(u32, 2), machineCheckModel(.amd_milan_b1));
+}
 pub fn profile(vendor: []const u8, family: u32, model: u32, stepping: u32, hypervisor: bool) Profile {
     if (hypervisor) return .virtual;
     if (std.mem.eql(u8, vendor, "GenuineIntel") and family == 6 and
