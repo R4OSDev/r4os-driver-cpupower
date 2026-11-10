@@ -10,7 +10,7 @@ var cppc: Cppc = undefined;
 var cookie: u64 = 0;
 var firmware_cookie: u64 = 0;
 comptime {
-    if (!@import("builtin").is_test) asm (r4os.r4dev.driverEntriesAsm("cpu_power_init", "cpu_power_shutdown"));
+    if (!@import("builtin").is_test) asm (r4os.technical2.driverEntriesAsm("cpu_power_init", "cpu_power_shutdown"));
 }
 fn snapshot(context: usize, cpu: u32, epoch: u64, out: *a.CpuPowerInfo) callconv(.c) i32 {
     const owner: *Provider = @ptrFromInt(context);
