@@ -10,7 +10,7 @@ var cppc: Cppc = undefined;
 var cookie: u64 = 0;
 var firmware_cookie: u64 = 0;
 comptime {
-    asm (r4os.r4dev.driverEntriesAsm("cpu_power_init", "cpu_power_shutdown"));
+    if (!@import("builtin").is_test) asm (r4os.r4dev.driverEntriesAsm("cpu_power_init", "cpu_power_shutdown"));
 }
 fn snapshot(context: usize, cpu: u32, epoch: u64, out: *a.CpuPowerInfo) callconv(.c) i32 {
     const owner: *Provider = @ptrFromInt(context);
@@ -32,8 +32,8 @@ fn firmware(context: usize, request: *const a.CpuPerformanceRequest, out: *a.Cpu
     const owner: *Provider = @ptrFromInt(context);
     return @import("firmware.zig").execute(&owner.mechanism, request, out);
 }
-export fn cpu_power_init(input: *const a.DriverApi) callconv(.c) i32 {
-    const ctx = r4os.r4dev.DriverContext.init(input);
+export fn cpu_power_init(input: *const r4os.r4dev.DriverApi2) callconv(.c) i32 {
+    const ctx = r4os.r4dev.DriverContext2.init(input);
     if (!ctx.apiCompatible()) return a.cpu_capabilities_error_unsupported;
     const resources = ctx.resources() orelse return a.cpu_capabilities_error_unsupported;
     const mechanism = resources.cpuPower() orelse return a.cpu_capabilities_error_unsupported;

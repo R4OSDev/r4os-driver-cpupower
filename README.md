@@ -6,6 +6,13 @@ address is accepted. Its manifest declares parallel callbacks with owned
 lifetimes. It creates no threads. Passive observations retain no CPU pins;
 explicit performance requests retain exact CPU membership until actual return.
 
+Version0.1.7 uses `DriverInit2` and `R4DEV:Query2:2` to obtain the existing
+independent resource/CPU mechanism. Its model filters, CPU and clock epochs,
+control cookies and failure retention are unchanged. Firmware unregister must
+acknowledge before the telemetry/control provider is unregistered; this runs
+before the loader's generic admission closure. KVM exercises this lifecycle,
+not the physical HWP/CPPC or firmware models described below.
+
 The separate optional idle policy introduced in0.85.31 permits only locally
 qualified firmware entries, caps declared entry/exit latency at100us and
 requires a remaining timer budget exceeding four times that latency. This
