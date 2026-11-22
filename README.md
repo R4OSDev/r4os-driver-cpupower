@@ -6,6 +6,10 @@ address is accepted. Its manifest declares parallel callbacks with owned
 lifetimes. It creates no threads. Passive observations retain no CPU pins;
 explicit performance requests retain exact CPU membership until actual return.
 
+Version 0.1.9 also supplies the two documented Data Fabric DRAM selectors for
+native AMD Family 17h Model 71h B0. An active consumer borrows two free package
+counters. Closing the consumer or unloading the provider returns the loan.
+
 Version0.1.7 uses `DriverInit2` and `R4DEV:Query2:2` to obtain the existing
 independent resource/CPU mechanism. Its model filters, CPU and clock epochs,
 control cookies and failure retention are unchanged. Firmware unregister must

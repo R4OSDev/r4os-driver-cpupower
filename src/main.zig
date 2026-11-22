@@ -96,6 +96,15 @@ export fn cpu_power_init(input: *const r4os.r4dev.DriverApi2) callconv(.c) i32 {
             return result_idle;
         }
     }
+    // Zen 2 Matisse B0 data requests with a payload, two DF channels.
+    // Registering this model description leaves every counter untouched.
+    if (mechanism.has("dram_register")) {
+        const rc = mechanism.registerDram(cookie, 0x00870f10, 0x3807, 0x3847);
+        if (rc != 0) {
+            _ = cpu_power_shutdown();
+            return rc;
+        }
+    }
     ctx.logInfo("CPUPOWER.R4D ready; direct HWP/CPPC, firmware transport and bounded idle intent");
     return 0;
 }
